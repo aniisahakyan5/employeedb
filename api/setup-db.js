@@ -4,9 +4,11 @@ export default async function handler(request, response) {
   try {
     const sql = neon(process.env.DATABASE_URL);
     
-    // 1. Create the table if it doesn't exist
+    // 1. HARD RESET: Create the table from scratch (from 0)
+    await sql`DROP TABLE IF EXISTS employees;`;
+    
     await sql`
-      CREATE TABLE IF NOT EXISTS employees (
+      CREATE TABLE employees (
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         surname VARCHAR(100) NOT NULL,
@@ -19,31 +21,28 @@ export default async function handler(request, response) {
       );
     `;
 
-    // 2. Check if the table is empty
-    const existing = await sql`SELECT 1 FROM employees LIMIT 1;`;
-    
-    // 3. Insert initial data if empty
-    if (existing.length === 0) {
-      await sql`
-        INSERT INTO employees (name, surname, position, department, dept_priority, phone, email, birthday)
-        VALUES 
-          ('Aram', 'Baghdasaryan', 'CTO', 'Executive & Management', 1, '374 93591459', 'aram.baghdasaryan@movato.com', 'January 21'),
-          ('Arevik', 'Martirosyan', 'Arev', 'Executive & Management', 1, '374 94800385', 'arevik.martirosyan@movato.com', 'August 13'),
-          ('Artak', 'Sargsyan', 'CEO', 'Executive & Management', 1, '374 91 123456', 'artak.sargsyan@movato.com', 'January 1'),
-          ('Artashes', 'Amiryan', 'Backend Developer', 'Engineering', 2, '374 96 661611', 'artashes.amiryan@movato.com', 'April 19'),
-          ('Davit', 'Manukyan', 'Backend Developer', 'Engineering', 2, '374 98131020', 'davit.manukyan@movato.com', ''),
-          ('Seryozha', 'Harutyunyan', 'Mobile Developer', 'Engineering', 2, '374 98693679', 'seryozha.harutyunyan@movato.com', 'November 20'),
-          ('Serine', 'Tovmasyan', 'Frontend Developer', 'Engineering', 2, '374 94013198', 'serine.tovmasyan@movato.com', 'January 31'),
-          ('Knarik', 'Hovhannisyan', 'QA', 'QA & DevOps', 3, '374 93444380', 'knarik.hovhannisyan@movato.com', 'November 17'),
-          ('Karen', 'Vardanyan', 'DevOps', 'QA & DevOps', 3, '374 94471298', 'karen.vardanyan@movato.com', 'July 15'),
-          ('Ani', 'Isahakyan', 'Business Analyst', 'Product & Design', 4, '374 91030901', 'ani.isahakyan@movato.com', 'September 1'),
-          ('Khachatur', 'Arukyan', 'UI/UX', 'Product & Design', 4, '374 44416116', 'khachatur.arukyan@movato.com', 'October 29'),
-          ('Aram', 'Khachatryan', 'IT Support Specialist', 'IT Support', 5, '374 55722800', 'aram.khachatryan@movato.com', 'June 8')
-        ON CONFLICT (email) DO NOTHING;
-      `;
-    }
+    // 2. Insert initial data using the NEW 8 departments and their priorities
+    await sql`
+      INSERT INTO employees (name, surname, position, department, dept_priority, phone, email, birthday)
+      VALUES 
+        ('Artak', 'Sargsyan', 'CEO', 'Executive', 1, '374 91 123456', 'artak.sargsyan@movato.com', 'January 1'),
+        ('Aram', 'Baghdasaryan', 'CTO', 'Executive', 1, '374 93591459', 'aram.baghdasaryan@movato.com', 'January 21'),
+        ('Arevik', 'Martirosyan', 'Arev', 'Executive', 1, '374 94800385', 'arevik.martirosyan@movato.com', 'August 13'),
+        ('Artashes', 'Amiryan', 'Backend Developer', 'Engineering', 2, '374 96 661611', 'artashes.amiryan@movato.com', 'April 19'),
+        ('Davit', 'Manukyan', 'Backend Developer', 'Engineering', 2, '374 98131020', 'davit.manukyan@movato.com', ''),
+        ('Seryozha', 'Harutyunyan', 'Mobile Developer', 'Engineering', 2, '374 98693679', 'seryozha.harutyunyan@movato.com', 'November 20'),
+        ('Serine', 'Tovmasyan', 'Frontend Developer', 'Engineering', 2, '374 94013198', 'serine.tovmasyan@movato.com', 'January 31'),
+        ('Knarik', 'Hovhannisyan', 'QA', 'Engineering', 2, '374 93444380', 'knarik.hovhannisyan@movato.com', 'November 17'),
+        ('Karen', 'Vardanyan', 'DevOps', 'Engineering', 2, '374 94471298', 'karen.vardanyan@movato.com', 'July 15'),
+        ('Ani', 'Isahakyan', 'Business Analyst', 'Marketing', 5, '374 91030901', 'ani.isahakyan@movato.com', 'September 1'),
+        ('Aram', 'Khachatryan', 'IT Support Specialist', 'Local Operations', 8, '374 55722800', 'aram.khachatryan@movato.com', 'June 8'),
+        ('Khachatur', 'Arukyan', 'UI/UX', 'Local Operations', 8, '374 44416116', 'khachatur.arukyan@movato.com', 'October 29')
+      ON CONFLICT (email) DO NOTHING;
+    `;
 
-    return response.status(200).json({ message: 'Database setup successfully completed for Neon! You can now access your directory page.' });
+    return response.status(200).json({ 
+      message: 'Database recreated from scratch with the new 8-department hierarchy! Refresh your main page now.' 
+    });
   } catch (error) {
     return response.status(500).json({ error: error.message });
   }
