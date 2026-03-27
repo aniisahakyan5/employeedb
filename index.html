@@ -302,6 +302,39 @@
             color: var(--accent-red);
         }
 
+        .icon-wrapper.car { background: rgba(0, 184, 217, 0.1); color: var(--primary); }
+        
+        .detail-item.car {
+            transition: all 0.3s ease;
+            padding: 0.25rem 0.5rem;
+            margin-left: -0.5rem;
+            border-radius: 8px;
+        }
+
+        .detail-item.car:hover {
+            background: rgba(0, 184, 217, 0.08);
+            transform: translateX(4px);
+        }
+
+        .car-photo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-left: auto;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .car-photo:hover {
+            transform: scale(4) translateX(-15px);
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 4px;
+        }
+
         .empty-state {
             text-align: center;
             padding: 4rem;
