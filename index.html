@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Database | Movato</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Branding colors based on the provided UI Foundation Image */
+            --primary: #00B8D9;
+            --secondary: #1E2945;
+            --bg-color: #F4F6F8;
+            --text-dark: #1A1B24;
+            --text-light: #FCFEFE;
+            --accent-red: #F60F5E;
+            --accent-purple: #A182F6;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--secondary);
+            color: var(--text-light);
+            padding: 4.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 5px solid var(--primary);
+        }
+
+        /* Subtle radial gradient to give life to the header background */
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 184, 217, 0.12) 0%, rgba(30, 41, 69, 0) 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            color: rgba(252, 254, 254, 0.85);
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            padding: 2rem 2rem 5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .search-container {
+            margin: -4.5rem auto 4rem;
+            max-width: 600px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 12px 35px rgba(30, 41, 69, 0.1);
+            border-radius: 50px;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+            border-radius: 50px;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 4px rgba(0, 184, 217, 0.25);
+        }
+        
+        .search-input::placeholder {
+            color: #9aa2b1;
+        }
+
+        .department-section {
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease-out backwards;
+            /* Using loop-like animation delays down below via inline styling */
+        }
+
+        .department-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(0, 184, 217, 0.15);
+        }
+
+        .department-header h2 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+
+        .department-badge {
+            background-color: rgba(0, 184, 217, 0.1);
+            color: var(--primary);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(30, 41, 69, 0.05);
+        }
+
+        /* Interactive side banner on card */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0.8;
+            transition: width 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(30, 41, 69, 0.08);
+        }
+
+        .card:hover::before {
+            width: 8px;
+            background: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-left: 8px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-light);
+            box-shadow: 0 4px 10px rgba(30, 41, 69, 0.15);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        /* Small online indicator on avatar for liveliness */
+        .avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            background: #10B981;
+            border: 3px solid var(--card-bg);
+            border-radius: 50%;
+        }
+
+        .info {
+            flex-grow: 1;
+        }
+
+        .info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .info .position {
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            margin-top: 1.5rem;
+            margin-left: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #5A607F;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .icon-wrapper {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(30, 41, 69, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .detail-item a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .detail-item a:hover {
+            color: var(--primary);
+        }
+
+        /* Hover effects for specific icons using the accent colors from palette */
+        .card:hover .icon-wrapper.phone {
+            background: rgba(0, 184, 217, 0.12);
+            color: var(--primary);
+        }
+        
+        .card:hover .icon-wrapper.email {
+            background: rgba(161, 130, 246, 0.12);
+            color: var(--accent-purple);
+        }
+
+        .card:hover .icon-wrapper.birthday {
+            background: rgba(246, 15, 94, 0.12);
+            color: var(--accent-red);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--secondary);
+            opacity: 0.6;
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.2rem; }
+            .grid { grid-template-columns: 1fr; }
+            .search-container { margin: -3rem 1.5rem 3rem; width: auto; }
+            .main-content { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Employee Database</h1>
+        <p>Complete data records of all Movato personnel</p>
+    </header>
+
+    <div class="main-content">
+        <div class="search-container">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, position, department or email...">
+        </div>
+
+        <div id="departmentsContainer">
+            <!-- Dynamic Content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Global array to hold DB data fetched from Vercel Postgres
+        let employees = [];
+
+        const container = document.getElementById('departmentsContainer');
+        const searchInput = document.getElementById('searchInput');
+
+        function formatPhoneHref(phone) {
+            let clean = phone.replace(/\s+/g, '');
+            if (!clean.startsWith('+')) clean = '+' + clean;
+            return `tel:${clean}`;
+        }
+
+        function getInitials(name, surname) {
+            return `${name.charAt(0)}${surname.charAt(0)}`.toUpperCase();
+        }
+
+        // Reduces flat array into grouped dictionary {"Department": [Emps]}
+        function groupEmployees(data) {
+            return data.reduce((acc, emp) => {
+                if (!acc[emp.department]) acc[emp.department] = [];
+                acc[emp.department].push(emp);
+                return acc;
+            }, {});
+        }
+
+        function createCard(emp) {
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="avatar">${getInitials(emp.name, emp.surname)}</div>
+                        <div class="info">
+                            <h3>${emp.name} ${emp.surname}</h3>
+                            <div class="position">${emp.position}</div>
+                        </div>
+                    </div>
+                    <div class="details">
+                        <div class="detail-item">
+                            <div class="icon-wrapper phone"><i class="fa-solid fa-phone"></i></div>
+                            <a href="${formatPhoneHref(emp.phone)}">+${emp.phone}</a>
+                        </div>
+                        <div class="detail-item">
+                            <div class="icon-wrapper email"><i class="fa-solid fa-envelope"></i></div>
+                            <a href="mailto:${emp.email}">${emp.email}</a>
+                        </div>
+                        ${emp.birthday ? `
+                        <div class="detail-item">
+                            <div class="icon-wrapper birthday"><i class="fa-solid fa-cake-candles"></i></div>
+                            <span>${emp.birthday}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDirectory(data) {
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-regular fa-face-frown-open"></i>
+                        <h2>No employees found</h2>
+                        <p>Try adjusting your search criteria</p>
+                    </div>`;
+                return;
+            }
+
+            const grouped = groupEmployees(data);
+            
+            // Defines the specific rendering order of our 5 departments
+            const order = ["Executive & Management", "Engineering", "QA & DevOps", "Product & Design", "IT Support"];
+            
+            container.innerHTML = order.map((dept, idx) => {
+                const deptEmps = grouped[dept];
+                if (!deptEmps || deptEmps.length === 0) return '';
+                
+                // Add staggered animation delay to each section
+                const delay = idx * 0.15;
+                return `
+                    <div class="department-section" style="animation-delay: ${delay}s">
+                        <div class="department-header">
+                            <h2>${dept}</h2>
+                            <span class="department-badge">${deptEmps.length} Members</span>
+                        </div>
+                        <div class="grid">
+                            ${deptEmps.map(emp => createCard(emp)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = employees.filter(emp => {
+                const fullName = `${emp.name} ${emp.surname}`.toLowerCase();
+                return fullName.includes(term) || 
+                       emp.position.toLowerCase().includes(term) || 
+                       emp.email.toLowerCase().includes(term) ||
+                       emp.department.toLowerCase().includes(term) ||
+                       emp.phone.replace(/\s+/g, '').includes(term.replace(/\s+/g, ''));
+            });
+            renderDirectory(filtered);
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Show a loading state
+                container.innerHTML = '<div style="text-align: center; padding: 4rem; color: var(--secondary);">Loading database entries...</div>';
+                
+                // Fetch data from Vercel Postgres API
+                const response = await fetch('/api/employees');
+                if (!response.ok) throw new Error('Failed to fetch from the database');
+                
+                employees = await response.json();
+                renderDirectory(employees);
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <h2>Database Connection Failed</h2>
+                        <p>Have you connected your Vercel DB and accessed /api/setup-db ?</p>
+                    </div>`;
+            }
+        });
+    </script>
+</body>
+</html>

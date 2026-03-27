@@ -1,0 +1,9 @@
+{
+  "name": "movato-phonebook",
+  "version": "1.0.0",
+  "description": "Employee Database connected to Neon Postgres",
+  "type": "module",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0"
+  }
+}
