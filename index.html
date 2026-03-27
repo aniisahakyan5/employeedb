@@ -463,9 +463,10 @@
                         </div>
                         ` : ''}
                         ${emp.vehicle_plate ? `
-                        <div class="detail-item">
+                        <div class="detail-item car">
                             <div class="icon-wrapper car"><i class="fa-solid fa-car"></i></div>
                             <span>${emp.vehicle_plate}</span>
+                            ${emp.vehicle_photo ? `<img src="${emp.vehicle_photo}" class="car-photo" alt="Vehicle">` : ''}
                         </div>
                         ` : ''}
                     </div>
