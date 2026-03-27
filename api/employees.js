@@ -6,7 +6,8 @@ export default async function handler(request, response) {
     const sql = neon(process.env.DATABASE_URL);
     
     // The neon function returns rows directly as an array
-    const rows = await sql`SELECT * FROM employees ORDER BY id ASC;`;
+    // Sort alphabetically by name and then surname
+    const rows = await sql`SELECT * FROM employees ORDER BY name ASC, surname ASC;`;
     
     return response.status(200).json(rows);
   } catch (error) {
