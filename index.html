@@ -339,22 +339,22 @@
 
         /* Navigation Bar Styles */
         .nav-bar {
-            position: sticky;
-            top: 2rem;
+            position: relative;
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 0.75rem 1rem;
-            margin: 0 4rem 2rem;
+            padding: 0.75rem 1.25rem;
+            margin: 0 auto 2rem;
+            width: fit-content;
+            max-width: 90%;
             border-radius: 16px;
             display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 0.75rem;
-            overflow-x: auto;
-            white-space: nowrap;
             z-index: 100;
             border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            scrollbar-width: none; /* Hide scrollbar Firefox */
         }
 
         .nav-bar::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
