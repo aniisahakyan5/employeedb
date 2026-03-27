@@ -320,6 +320,60 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Navigation Bar Styles */
+        .nav-bar {
+            position: sticky;
+            top: 2rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.75rem 1rem;
+            margin: 0 4rem 2rem;
+            border-radius: 16px;
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+
+        .nav-bar::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+
+        .nav-link {
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 184, 217, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .department-section {
+            scroll-margin-top: 6rem;
+        }
+
         @media (max-width: 768px) {
             header h1 { font-size: 2.2rem; }
             .grid { grid-template-columns: 1fr; }
@@ -339,6 +393,10 @@
         <div class="search-container">
             <i class="fa-solid fa-search"></i>
             <input type="text" id="searchInput" class="search-input" placeholder="Search by name, position, department or email...">
+        </div>
+
+        <div id="navBar" class="nav-bar" style="display: none;">
+            <!-- Dynamic Navigation Links -->
         </div>
 
         <div id="departmentsContainer">
@@ -404,6 +462,12 @@
                             <span>${emp.birthday}</span>
                         </div>
                         ` : ''}
+                        ${emp.vehicle_plate ? `
+                        <div class="detail-item">
+                            <div class="icon-wrapper car"><i class="fa-solid fa-car"></i></div>
+                            <span>${emp.vehicle_plate}</span>
+                        </div>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -422,12 +486,25 @@
 
             const { groups, order } = groupEmployees(data);
             
+            // Render Navigation Bar
+            const navBar = document.getElementById('navBar');
+            if (order.length > 1) {
+                navBar.style.display = 'flex';
+                navBar.innerHTML = order.map(dept => {
+                    const id = dept.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                    return `<a href="#${id}" class="nav-link">${dept}</a>`;
+                }).join('');
+            } else {
+                navBar.style.display = 'none';
+            }
+
             container.innerHTML = order.map((dept, idx) => {
                 const deptEmps = groups[dept];
                 if (!deptEmps || deptEmps.length === 0) return '';
                 const delay = idx * 0.15;
+                const id = dept.toLowerCase().replace(/[^a-z0-9]/g, '-');
                 return `
-                    <div class="department-section" style="animation-delay: ${delay}s">
+                    <div id="${id}" class="department-section" style="animation-delay: ${delay}s">
                         <div class="department-header">
                             <h2>${dept}</h2>
                             <span class="department-badge">${deptEmps.length} Members</span>
