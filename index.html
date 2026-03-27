@@ -469,6 +469,21 @@
 
         const container = document.getElementById('departmentsContainer');
         const searchInput = document.getElementById('searchInput');
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        // Toggle scroll to top button visibility
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        // Scroll to top on click
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
 
         function formatPhoneHref(phone) {
             let clean = phone.replace(/\s+/g, '');
