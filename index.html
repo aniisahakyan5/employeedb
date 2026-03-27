@@ -415,10 +415,19 @@
 
             const grouped = groupEmployees(data);
             
-            // Defines the specific rendering order of our 5 departments
-            const order = ["Executive & Management", "Engineering", "QA & DevOps", "Product & Design", "IT Support"];
+            // Priority order for known departments
+            const priorityOrder = ["Executive & Management", "Engineering", "QA & DevOps", "Product & Design", "IT Support"];
             
-            container.innerHTML = order.map((dept, idx) => {
+            // Extract all unique departments currently in our data
+            const allDepts = Object.keys(grouped);
+            
+            // Combine priority departments with any new ones found in the DB
+            const finalOrder = [
+                ...priorityOrder.filter(dept => allDepts.includes(dept)),
+                ...allDepts.filter(dept => !priorityOrder.includes(dept))
+            ];
+            
+            container.innerHTML = finalOrder.map((dept, idx) => {
                 const deptEmps = grouped[dept];
                 if (!deptEmps || deptEmps.length === 0) return '';
                 
